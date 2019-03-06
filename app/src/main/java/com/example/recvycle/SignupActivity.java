@@ -1,11 +1,9 @@
 package com.example.recvycle;
-import java.util.HashMap;
-import java.util.Map;
 
 import android.app.ProgressDialog;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,37 +18,30 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class MainActivity extends AppCompatActivity {
 
-    EditText username;
-    EditText password;
-    Button loginButton;
+public class SignupActivity extends AppCompatActivity {
+    private  EditText username;
+    private EditText password;
+    private Button SignupButton;
     private FirebaseAuth mAuth;
-    FirebaseFirestore db;
-    TextView link;
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        // Check if user is signed in (non-null) and update UI accordingly.
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//    }
+    private TextView link;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_signup);
 
-         db = FirebaseFirestore.getInstance();
 //        HashMap<String, String> map = new HashMap<>();
-        loginButton=(Button)findViewById(R.id.btn_login);
+        SignupButton=(Button)findViewById(R.id.btn_signup);
         username = (EditText)findViewById(R.id.input_email);
         password = (EditText)findViewById(R.id.input_password);
-        link=(TextView)findViewById(R.id.link_signup);
+        link=(TextView)findViewById(R.id.link_login);
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        SignupButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                login();
+                signup();
             }
         });
 
@@ -58,12 +49,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                setContentView(R.layout.activity_signup);
+                setContentView(R.layout.activity_main);
             }
         });
-    }
 
-    void login() {
+    }
+    void signup() {
 //        if (!validate()) {
 //            onLoginFailed();
 //            return;
@@ -84,50 +75,28 @@ public class MainActivity extends AppCompatActivity {
         //FirebaseAuth.getInstance().signOut();
         mAuth = FirebaseAuth.getInstance();
 
-        mAuth.signInWithEmailAndPassword(email, pass)
+        mAuth.createUserWithEmailAndPassword(email, pass)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                           // Log.d(TAG, "createUserWithEmail:success");
+                            // Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             setContentView(R.layout.activity_menu);
-                           // updateUI(user);
+                            // updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             //Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(getApplicationContext(), "Wrong Credentials",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Wrong Credentials", Toast.LENGTH_SHORT).show();
 
 
-                                    //updateUI(null);
+                            //updateUI(null);
                         }
 
                         // ...
                     }
                 });
-
-
-//        new android.os.Handler().postDelayed(
-//                new Runnable() {
-//                    public void run() {
-//                        // On complete call either onLoginSuccess or onLoginFailed
-//                        onLoginSuccess();
-//                        // onLoginFailed();
-//                        progressDialog.dismiss();
-//                    }
-//                }, 3000);
-    }
-
-    public void onLoginSuccess() {
-        loginButton.setEnabled(true);
-        finish();
-    }
-
-    public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
-        loginButton.setEnabled(true);
     }
 
     public boolean validate() {
